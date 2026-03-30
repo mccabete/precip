@@ -1,0 +1,9 @@
+era5_data/*
+*.zip
+test.csv
+*.csv
+Zebs_CONUS_data/*
+*.pdf
+*.bib
+*.parquet
+*.parq
