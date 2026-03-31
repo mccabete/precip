@@ -8,3 +8,4 @@ Zebs_CONUS_data/*
 *.parquet
 *.parq
 *.ipynb_checkpoints
+*checkpoint*
