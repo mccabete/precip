@@ -10,3 +10,5 @@ Zebs_CONUS_data/*
 *.ipynb_checkpoints*
 *checkpoint*
 .*
+*__pycache__*
+*egg*
