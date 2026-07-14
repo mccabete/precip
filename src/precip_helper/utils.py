@@ -48,7 +48,7 @@ def read_in_fires_and_precip():
     fires_sm["stable_index"] = fires_sm.index
 
     ### precipitation
-    precip = pd.read_parquet(os.path.abspath("IMERG/half_hourly_IMERG_precip"))
+    precip = pd.read_parquet(os.path.abspath("IMERG/half_hourly_IMERG_precip_threshold05")) # Precipitation_paper/IMERG/half_hourly_IMERG_precip_threshold05 # half_hourly_IMERG_precip
     precip = precip.merge(fires_sm[["UfireID",	"centroid"]], on = "UfireID")
     precip.loc[:, "lon"] = precip.centroid.apply(lambda p: p.x)
 
