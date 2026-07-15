@@ -103,6 +103,7 @@ def read_in_fires_and_precip():
     fires.t = fires.t.astype("datetime64[ns]")
     fires = fires.sort_values(by = ["UfireID", "t"])
     fires["precip_diff"] = fires.groupby("UfireID").precipitation.diff() ## Positive is when the amount of rain goes up, negative down
+    fires = fires[fires.l1_ecoregion != "GREAT PLAINS"] 
     return(fires)
 
 
