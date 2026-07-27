@@ -14,10 +14,11 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import os
 import numpy as np
+import ast
 
 
 
-def read_in_fires_and_precip():
+def read_in_fires_and_precip( subset_method = "great_plains", thresh = 0.5): # subset_method = "f1_score"
     '''
     Helper function that reads in: 
     Zebs's MBTS matched database
@@ -103,7 +104,19 @@ def read_in_fires_and_precip():
     fires.t = fires.t.astype("datetime64[ns]")
     fires = fires.sort_values(by = ["UfireID", "t"])
     fires["precip_diff"] = fires.groupby("UfireID").precipitation.diff() ## Positive is when the amount of rain goes up, negative down
-    fires = fires[fires.l1_ecoregion != "GREAT PLAINS"] 
+    if(subset_method != "f1_score"):
+        fires = fires[fires.l1_ecoregion != "GREAT PLAINS"] 
+        print("Subsetting fires by removing Great Plains ecoregion.")
+    else:
+        print(f"Subsetting fires by only selecting fires with and fscore of >= {thresh}. Remember that you can also try Yang's MTBS constrained feds too")
+        fname = gpd.read_file("s3://maap-ops-workspace/shared/zbecker/TESS_fire_spread/v10_output.parq")
+        #fname = fname[fname.f1_score >= thresh]
+        fname['FEDS_matched_IDs'] = fname['FEDS_matched_IDs'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
+        fname = fname.explode("FEDS_matched_IDs")
+        fname.loc[:, "UfireID"] = fname.year.astype("str") + fname.FEDS_matched_IDs.astype("str")
+        fires = fires[fires.UfireID.isin(fname.UfireID)]
+        
+        
     return(fires)
 
 
